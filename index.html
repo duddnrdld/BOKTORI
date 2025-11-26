@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <title>사브사리 오늘의 행운메시지</title>
+  <link rel="stylesheet" href="styles/style.css">
+  <style>
+    :root{
+      --bg:#fff6fb; --card:#ffffff; --ink:#333; --accent:#ff7fb4; --accent2:#9ad8ff; --radius:26px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:"Pretendard",system-ui,-apple-system,Segoe UI,Roboto,"Noto Sans KR",Arial,sans-serif;
+      background:
+        radial-gradient(1200px 600px at 30% -10%, #ffd6ea 0%, #fff6fb 45%, #fff6fb 100%),
+        radial-gradient(1000px 500px at 90% 10%, #e8f6ff 0%, transparent 50%);
+      color:var(--ink);
+      overflow:hidden;
+    }
+
+    .wrap{max-width:520px;margin:0 auto;padding:22px 16px 44px; position:relative; z-index:3;}
+    .bubble{position:absolute; width:90px; height:90px; border-radius:50%;
+      background:linear-gradient(135deg,#ffe3f1,#e8f6ff); filter:blur(1px); opacity:.6; animation:float 6s ease-in-out infinite}
+    .b1{top:-10px; left:-10px}
+    .b2{top:40px; right:-18px; width:72px; height:72px; animation-duration:7.5s}
+    @keyframes float{0%{transform:translateY(0)}50%{transform:translateY(-8px)}100%{transform:translateY(0)}}
+
+    /* 카드: 반투명 */
+    .card{
+      background: rgba(255,255,255,0.8);
+      border-radius:var(--radius);
+      padding:22px;
+      text-align:center;
+      box-shadow:0 10px 30px rgba(255,127,180,.28);
+      position:relative;
+      backdrop-filter: blur(4px);
+    }
+
+    .chip{display:inline-block; padding:7px 12px; border-radius:999px;
+      background:#fff0f6; color:#c43c7a; font-weight:800; font-size:12px;
+      border:1px solid #ffd6e9; letter-spacing:.2px}
+    .title{font-weight:900; font-size:24px; margin:12px 0 8px}
+    .sabsari{ width:clamp(200px,70vw,300px); height:auto; display:block;
+      margin:8px auto 14px; filter:drop-shadow(0 6px 14px rgba(0,0,0,.08));
+      animation:float 3.2s ease-in-out infinite }
+
+    .now-badge{
+      display:inline-flex; align-items:center; gap:8px;
+      background:linear-gradient(90deg,#fff7fb,#eef8ff);
+      border:1px dashed #ffd6e9; border-radius:999px;
+      padding:8px 12px; font-weight:700; color:#444; font-size:13px; margin-bottom:12px;
+    }
+    .dot{width:8px;height:8px;border-radius:50%; background:conic-gradient(#ff7fb4,#ffc1dd,#9ad8ff); box-shadow:0 0 8px rgba(255,127,180,.6)}
+
+    .btn{
+      display:inline-block; width:100%; padding:14px 16px; border:none; border-radius:18px;
+      font-weight:800; font-size:16px; text-align:center; text-decoration:none; letter-spacing:.2px;
+      background:linear-gradient(90deg, var(--accent), #ffc1dd);
+      color:#fff; box-shadow:0 10px 18px rgba(255,127,180,.35); transition:.15s transform ease;
+    }
+    .btn:active{transform:translateY(1px)}
+    .footer{ text-align:center; color:#a2a2a2; font-size:12px; margin-top:20px; position:relative; z-index:4;}
+
+    /* 삽살개 비 효과 */
+    .rain{ position:fixed; inset:0; overflow:hidden; pointer-events:none; z-index:1; }
+    .drop{
+      position:absolute; width:60px; height:60px;
+      filter:blur(0.5px) drop-shadow(0 3px 6px rgba(0,0,0,.15));
+      will-change:transform, opacity, visibility;
+
+      /* ✨ 깜박임 방지: 초기 상태부터 랜덤 좌표에 배치 + 거의 투명 */
+      transform: translate(var(--x), var(--startY)) rotate(0deg);
+      opacity: 0.001;
+      visibility: hidden;
+
+      animation: fall var(--dur) linear infinite;
+      animation-delay: var(--delay);
+      animation-fill-mode: both; /* delay 동안에도 0% 프레임 유지 */
+    }
+
+    @keyframes fall {
+      0% {
+        transform: translate(var(--x), var(--startY)) rotate(0deg);
+        opacity: 0.08;
+      }
+      25% {
+        transform: translate(calc(var(--x) + 30px), calc(var(--startY) + 25vh)) rotate(180deg);
+        opacity: 0.5;
+      }
+      50% {
+        transform: translate(calc(var(--x) - 20px), calc(var(--startY) + 50vh)) rotate(360deg);
+        opacity: 0.85;
+      }
+      75% {
+        transform: translate(calc(var(--x) + 40px), calc(var(--startY) + 75vh)) rotate(540deg);
+        opacity: 0.5;
+      }
+      100% {
+        transform: translate(var(--x), calc(var(--startY) + 110vh)) rotate(720deg);
+        opacity: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="rain" id="rain"></div>
+
+  <div class="wrap">
+    <span class="bubble b1"></span>
+    <span class="bubble b2"></span>
+
+    <div class="card" id="stage-welcome">
+      <div class="chip">♡오늘의 행운 메시지 확인하기♡</div>
+
+      <img id="sabsariImg" class="sabsari"
+           src="./assets/sabsari_motion.gif?v=4"
+           alt="움직이는 사브사리"
+           onerror="this.onerror=null; this.src='./assets/sabsari.png?v=1';" />
+
+      <div class="now-badge"><span class="dot"></span><span id="nowText">--:--:--</span></div>
+
+      <h1 class="title">오늘의 행운메시지를 보여줄까?</h1>
+
+      <a href="./loading.html" class="btn" rel="noopener">부탁해!</a>
+    </div>
+
+    <div class="footer">© Sabusari</div>
+  </div>
+
+  <script>
+    /* 시간 표시 */
+    const el=document.getElementById('nowText');
+    function fmt(){
+      const d=new Date();
+      return `${d.getMonth()+1}월 ${String(d.getDate()).padStart(2,'0')}일 ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}:${String(d.getSeconds()).padStart(2,'0')}`;
+    }
+    setInterval(()=>{el.textContent=fmt();},1000); el.textContent=fmt();
+
+    /* 삽살개 비: 시작부터 랜덤 좌표에서 '대기 없이' 보이도록 */
+    const rain = document.getElementById('rain');
+    const imgs = ['./assets/sab1.png','./assets/sab2.png','./assets/sab3.png','./assets/sab4.png'];
+    const per = 10; // 각 이미지당 10개(총 40개)
+
+    for (let i = 0; i < per * imgs.length; i++) {
+      const d = document.createElement('img');
+      d.src = imgs[i % imgs.length];
+      d.className = 'drop';
+
+      // 속도/지연 랜덤
+      const dur   = (Math.random() * 3 + 3).toFixed(1) + 's'; // 3~6초
+      const delay = (Math.random() * 3).toFixed(1) + 's';     // 0~3초
+
+      // 화면 전역 랜덤 시작 위치
+      const x = (Math.random() * 100).toFixed(2) + 'vw';
+      const startY = (Math.random() * 100 - 20).toFixed(2) + 'vh'; // -20vh ~ 80vh
+
+      // CSS 변수 먼저 세팅
+      d.style.setProperty('--dur', dur);
+      d.style.setProperty('--delay', delay);
+      d.style.setProperty('--x', x);
+      d.style.setProperty('--startY', startY);
+
+      // 🔒 깜박임 방지: append 전 초기 transform/opacity 적용
+      d.style.transform = `translate(${x}, ${startY}) rotate(0deg)`;
+      d.style.opacity = '0.001';
+      d.style.visibility = 'hidden';
+
+      rain.appendChild(d);
+
+      // 다음 페인트 프레임에 보이게 전환 (delay 동안에도 0% 프레임 상태 유지)
+      requestAnimationFrame(() => {
+        d.style.visibility = 'visible';
+      });
+    }
+  </script>
+</body>
+</html>
