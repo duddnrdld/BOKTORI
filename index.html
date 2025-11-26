@@ -3,177 +3,257 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-  <title>사브사리 오늘의 행운메시지</title>
-  <link rel="stylesheet" href="styles/style.css">
+  <title>BOKTORI · 십이간지 복토리</title>
   <style>
-    :root{
-      --bg:#fff6fb; --card:#ffffff; --ink:#333; --accent:#ff7fb4; --accent2:#9ad8ff; --radius:26px;
-    }
-    *{box-sizing:border-box}
+    *{box-sizing:border-box;margin:0;padding:0}
     body{
-      margin:0;
-      font-family:"Pretendard",system-ui,-apple-system,Segoe UI,Roboto,"Noto Sans KR",Arial,sans-serif;
-      background:
-        radial-gradient(1200px 600px at 30% -10%, #ffd6ea 0%, #fff6fb 45%, #fff6fb 100%),
-        radial-gradient(1000px 500px at 90% 10%, #e8f6ff 0%, transparent 50%);
-      color:var(--ink);
+      font-family:"Pretendard","Noto Sans KR",system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+      background:#000;
+      color:#fff;
       overflow:hidden;
     }
 
-    .wrap{max-width:520px;margin:0 auto;padding:22px 16px 44px; position:relative; z-index:3;}
-    .bubble{position:absolute; width:90px; height:90px; border-radius:50%;
-      background:linear-gradient(135deg,#ffe3f1,#e8f6ff); filter:blur(1px); opacity:.6; animation:float 6s ease-in-out infinite}
-    .b1{top:-10px; left:-10px}
-    .b2{top:40px; right:-18px; width:72px; height:72px; animation-duration:7.5s}
-    @keyframes float{0%{transform:translateY(0)}50%{transform:translateY(-8px)}100%{transform:translateY(0)}}
+    /* 🔹 전체 배경 GIF */
+    .bg-gif{
+      position:fixed;
+      inset:0;
+      background:black url("assets/bg_gif1.gif") center center / cover no-repeat;
+      z-index:0;
+    }
 
-    /* 카드: 반투명 */
-    .card{
-      background: rgba(255,255,255,0.8);
-      border-radius:var(--radius);
-      padding:22px;
-      text-align:center;
-      box-shadow:0 10px 30px rgba(255,127,180,.28);
+    /* 🔹 내용 오버레이 */
+    .overlay{
       position:relative;
-      backdrop-filter: blur(4px);
+      z-index:1;
+      width:100%;
+      height:100vh;
+      padding:16px;
+      display:flex;
+      flex-direction:column;
     }
 
-    .chip{display:inline-block; padding:7px 12px; border-radius:999px;
-      background:#fff0f6; color:#c43c7a; font-weight:800; font-size:12px;
-      border:1px solid #ffd6e9; letter-spacing:.2px}
-    .title{font-weight:900; font-size:24px; margin:12px 0 8px}
-    .sabsari{ width:clamp(200px,70vw,300px); height:auto; display:block;
-      margin:8px auto 14px; filter:drop-shadow(0 6px 14px rgba(0,0,0,.08));
-      animation:float 3.2s ease-in-out infinite }
-
-    .now-badge{
-      display:inline-flex; align-items:center; gap:8px;
-      background:linear-gradient(90deg,#fff7fb,#eef8ff);
-      border:1px dashed #ffd6e9; border-radius:999px;
-      padding:8px 12px; font-weight:700; color:#444; font-size:13px; margin-bottom:12px;
-    }
-    .dot{width:8px;height:8px;border-radius:50%; background:conic-gradient(#ff7fb4,#ffc1dd,#9ad8ff); box-shadow:0 0 8px rgba(255,127,180,.6)}
-
-    .btn{
-      display:inline-block; width:100%; padding:14px 16px; border:none; border-radius:18px;
-      font-weight:800; font-size:16px; text-align:center; text-decoration:none; letter-spacing:.2px;
-      background:linear-gradient(90deg, var(--accent), #ffc1dd);
-      color:#fff; box-shadow:0 10px 18px rgba(255,127,180,.35); transition:.15s transform ease;
-    }
-    .btn:active{transform:translateY(1px)}
-    .footer{ text-align:center; color:#a2a2a2; font-size:12px; margin-top:20px; position:relative; z-index:4;}
-
-    /* 삽살개 비 효과 */
-    .rain{ position:fixed; inset:0; overflow:hidden; pointer-events:none; z-index:1; }
-    .drop{
-      position:absolute; width:60px; height:60px;
-      filter:blur(0.5px) drop-shadow(0 3px 6px rgba(0,0,0,.15));
-      will-change:transform, opacity, visibility;
-
-      /* ✨ 깜박임 방지: 초기 상태부터 랜덤 좌표에 배치 + 거의 투명 */
-      transform: translate(var(--x), var(--startY)) rotate(0deg);
-      opacity: 0.001;
-      visibility: hidden;
-
-      animation: fall var(--dur) linear infinite;
-      animation-delay: var(--delay);
-      animation-fill-mode: both; /* delay 동안에도 0% 프레임 유지 */
+    /* 🔹 좌측 상단 BOKTORI 로고 */
+    .logo{
+      font-size:26px;
+      font-weight:900;
+      letter-spacing:4px;
+      text-transform:uppercase;
+      padding:8px 14px;
+      border-radius:999px;
+      background:rgba(0,0,0,0.45);
+      display:inline-block;
     }
 
-    @keyframes fall {
-      0% {
-        transform: translate(var(--x), var(--startY)) rotate(0deg);
-        opacity: 0.08;
-      }
-      25% {
-        transform: translate(calc(var(--x) + 30px), calc(var(--startY) + 25vh)) rotate(180deg);
-        opacity: 0.5;
-      }
-      50% {
-        transform: translate(calc(var(--x) - 20px), calc(var(--startY) + 50vh)) rotate(360deg);
-        opacity: 0.85;
-      }
-      75% {
-        transform: translate(calc(var(--x) + 40px), calc(var(--startY) + 75vh)) rotate(540deg);
-        opacity: 0.5;
-      }
-      100% {
-        transform: translate(var(--x), calc(var(--startY) + 110vh)) rotate(720deg);
-        opacity: 0;
-      }
+    /* 🔹 중앙 대화 영역 */
+    .main{
+      flex:1;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      text-align:center;
+      padding:0 16px 32px;
+    }
+
+    .bubble{
+      max-width:520px;
+      width:100%;
+      min-height:120px;
+      background:rgba(0,0,0,0.55);
+      border-radius:24px;
+      padding:18px 18px 16px;
+      box-shadow:0 12px 30px rgba(0,0,0,0.4);
+      border:1px solid rgba(255,255,255,0.16);
+    }
+
+    .speaker{
+      font-size:14px;
+      font-weight:700;
+      color:#ffd9f1;
+      margin-bottom:4px;
+      text-align:left;
+    }
+
+    .text{
+      font-size:18px;
+      line-height:1.7;
+      text-align:left;
+      white-space:pre-wrap;
+      min-height:72px;
+    }
+
+    .hint{
+      margin-top:8px;
+      font-size:12px;
+      color:rgba(255,255,255,0.7);
+    }
+
+    /* 🔹 띠 선택 버튼들 */
+    .zodiac-wrap{
+      margin-top:18px;
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      justify-content:center;
+      max-width:520px;
+    }
+    .zodiac-btn{
+      border:none;
+      border-radius:999px;
+      padding:8px 14px;
+      font-size:14px;
+      font-weight:700;
+      cursor:pointer;
+      background:rgba(0,0,0,0.65);
+      color:#ffeef8;
+      border:1px solid rgba(255,255,255,0.35);
+      transition:transform .1s ease, background .1s ease, box-shadow .1s ease;
+      backdrop-filter:blur(6px);
+    }
+    .zodiac-btn:hover{
+      transform:translateY(-1px);
+      background:rgba(255,194,234,0.9);
+      color:#3b0030;
+      box-shadow:0 6px 14px rgba(0,0,0,0.35);
+    }
+    .zodiac-btn:active{
+      transform:translateY(0);
+      box-shadow:none;
+    }
+
+    @media (min-width:768px){
+      .logo{font-size:30px;}
+      .text{font-size:20px;}
+      .bubble{padding:22px 22px 18px;}
     }
   </style>
 </head>
 <body>
-  <div class="rain" id="rain"></div>
+  <!-- 🔹 배경 GIF (기본: GIF파일1) -->
+  <!-- TODO: 실제 파일 경로로 교체: assets/bg_gif1.gif -->
+  <div class="bg-gif" id="bgGif"></div>
 
-  <div class="wrap">
-    <span class="bubble b1"></span>
-    <span class="bubble b2"></span>
+  <div class="overlay">
+    <div class="logo">BOKTORI</div>
 
-    <div class="card" id="stage-welcome">
-      <div class="chip">♡오늘의 행운 메시지 확인하기♡</div>
+    <div class="main" id="mainArea">
+      <div class="bubble" id="bubble">
+        <div class="speaker" id="speaker">복토리</div>
+        <div class="text" id="dialogText"></div>
+        <div class="hint" id="hintText">화면을 한 번 더 눌러볼까?</div>
+      </div>
 
-      <img id="sabsariImg" class="sabsari"
-           src="./assets/sabsari_motion.gif?v=4"
-           alt="움직이는 사브사리"
-           onerror="this.onerror=null; this.src='./assets/sabsari.png?v=1';" />
-
-      <div class="now-badge"><span class="dot"></span><span id="nowText">--:--:--</span></div>
-
-      <h1 class="title">오늘의 행운메시지를 보여줄까?</h1>
-
-      <a href="./loading.html" class="btn" rel="noopener">부탁해!</a>
+      <div class="zodiac-wrap" id="zodiacWrap" style="display:none;"></div>
     </div>
-
-    <div class="footer">© Sabusari</div>
   </div>
 
   <script>
-    /* 시간 표시 */
-    const el=document.getElementById('nowText');
-    function fmt(){
-      const d=new Date();
-      return `${d.getMonth()+1}월 ${String(d.getDate()).padStart(2,'0')}일 ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}:${String(d.getSeconds()).padStart(2,'0')}`;
+    // 🔹 대사들
+    const firstLine  = "안녕! 반가워!\n우리는 십이간지 복토리들이야!";
+    const secondLine = "당신은 무슨띠에요?";
+
+    // 🔹 띠별 정보 (GIF + 대사)
+    // TODO: 각 gif 경로를 실제 파일명에 맞게 수정해줘.
+    const zodiacData = {
+      "쥐": { gif: "assets/zodiac_rat.gif",   line: "나는 쥐띠 복토리! 작은 시작이 큰 복을 만들 거야." },
+      "소": { gif: "assets/zodiac_ox.gif",    line: "나는 소띠 복토리! 차근차근, 하지만 끝까지 가는 힘을 줄게." },
+      "호랑이": { gif: "assets/zodiac_tiger.gif", line: "나는 호랑이띠 복토리! 용기 100% 타이밍 운까지 챙겨왔어." },
+      "토끼": { gif: "assets/zodiac_rabbit.gif", line: "나는 토끼띠 복토리! 포근한 행운이 사뿐사뿐 다가가고 있어." },
+      "용": { gif: "assets/zodiac_dragon.gif", line: "나는 용띠 복토리! 크게 비상하는 기운을 듬뿍 얹어줄게." },
+      "뱀": { gif: "assets/zodiac_snake.gif",  line: "나는 뱀띠 복토리! 눈치와 직감이 오늘 널 도와줄 거야." },
+      "말": { gif: "assets/zodiac_horse.gif",  line: "나는 말띠 복토리! 속도감 있게 앞으로 달려볼까?" },
+      "양": { gif: "assets/zodiac_sheep.gif",  line: "나는 양띠 복토리! 포근포근한 인연 운을 챙겨왔어." },
+      "원숭이": { gif: "assets/zodiac_monkey.gif", line: "나는 원숭이띠 복토리! 센스와 재치가 오늘의 무기야." },
+      "닭": { gif: "assets/zodiac_rooster.gif", line: "나는 닭띠 복토리! 부지런한 시작이 복을 깨우고 있어." },
+      "개": { gif: "assets/zodiac_dog.gif",   line: "나는 개띠 복토리! 믿음직한 동료 운을 붙여줄게." },
+      "돼지": { gif: "assets/zodiac_pig.gif", line: "나는 돼지띠 복토리! 먹을 복, 금전운 살짝 더 올려줄까?" }
+    };
+
+    // 🔹 DOM
+    const dialogTextEl = document.getElementById("dialogText");
+    const hintTextEl   = document.getElementById("hintText");
+    const zodiacWrapEl = document.getElementById("zodiacWrap");
+    const bgGifEl      = document.getElementById("bgGif");
+    const bubbleEl     = document.getElementById("bubble");
+
+    let state = "intro1";   // intro1 → intro1_done → intro2 → intro2_done → chosen
+    let isTyping = false;
+
+    // 🔹 타이핑 효과
+    function typeLine(text, callback){
+      isTyping = true;
+      dialogTextEl.textContent = "";
+      let idx = 0;
+
+      const timer = setInterval(() => {
+        if (idx >= text.length){
+          clearInterval(timer);
+          isTyping = false;
+          if (callback) callback();
+          return;
+        }
+        const ch = text[idx++];
+        dialogTextEl.textContent += ch;
+      }, 80); // 글자 속도
     }
-    setInterval(()=>{el.textContent=fmt();},1000); el.textContent=fmt();
 
-    /* 삽살개 비: 시작부터 랜덤 좌표에서 '대기 없이' 보이도록 */
-    const rain = document.getElementById('rain');
-    const imgs = ['./assets/sab1.png','./assets/sab2.png','./assets/sab3.png','./assets/sab4.png'];
-    const per = 10; // 각 이미지당 10개(총 40개)
+    // 🔹 띠 버튼 만들기
+    function showZodiacButtons(){
+      zodiacWrapEl.innerHTML = "";
+      zodiacWrapEl.style.display = "flex";
+      hintTextEl.textContent = "내 띠를 골라볼까?";
 
-    for (let i = 0; i < per * imgs.length; i++) {
-      const d = document.createElement('img');
-      d.src = imgs[i % imgs.length];
-      d.className = 'drop';
-
-      // 속도/지연 랜덤
-      const dur   = (Math.random() * 3 + 3).toFixed(1) + 's'; // 3~6초
-      const delay = (Math.random() * 3).toFixed(1) + 's';     // 0~3초
-
-      // 화면 전역 랜덤 시작 위치
-      const x = (Math.random() * 100).toFixed(2) + 'vw';
-      const startY = (Math.random() * 100 - 20).toFixed(2) + 'vh'; // -20vh ~ 80vh
-
-      // CSS 변수 먼저 세팅
-      d.style.setProperty('--dur', dur);
-      d.style.setProperty('--delay', delay);
-      d.style.setProperty('--x', x);
-      d.style.setProperty('--startY', startY);
-
-      // 🔒 깜박임 방지: append 전 초기 transform/opacity 적용
-      d.style.transform = `translate(${x}, ${startY}) rotate(0deg)`;
-      d.style.opacity = '0.001';
-      d.style.visibility = 'hidden';
-
-      rain.appendChild(d);
-
-      // 다음 페인트 프레임에 보이게 전환 (delay 동안에도 0% 프레임 상태 유지)
-      requestAnimationFrame(() => {
-        d.style.visibility = 'visible';
+      Object.keys(zodiacData).forEach(name => {
+        const btn = document.createElement("button");
+        btn.className = "zodiac-btn";
+        btn.textContent = name + "띠";
+        btn.addEventListener("click", (e) => {
+          e.stopPropagation();
+          pickZodiac(name);
+        });
+        zodiacWrapEl.appendChild(btn);
       });
     }
+
+    // 🔹 띠 선택 시 동작
+    function pickZodiac(name){
+      const info = zodiacData[name];
+      if (!info) return;
+
+      state = "chosen";
+      // 배경 GIF 교체
+      bgGifEl.style.backgroundImage = `url("${info.gif}")`;
+
+      // 말풍선 화자 이름 바꾸기
+      document.getElementById("speaker").textContent = name + "띠 복토리";
+
+      // 안내 문구 업데이트
+      hintTextEl.textContent = "다른 띠도 다시 눌러볼 수 있어요 :)";
+
+      // 대사 출력
+      typeLine(info.line);
+    }
+
+    // 🔹 첫 진입 시: 1번 대사 출력
+    window.addEventListener("load", () => {
+      typeLine(firstLine, () => {
+        state = "intro1_done";
+        hintTextEl.textContent = "화면을 한 번 눌러볼까?";
+      });
+    });
+
+    // 🔹 화면 클릭 시 상태 전환
+    document.body.addEventListener("click", () => {
+      if (isTyping) return;
+
+      if (state === "intro1_done"){
+        state = "intro2";
+        typeLine(secondLine, () => {
+          state = "intro2_done";
+          showZodiacButtons();
+        });
+      }
+    }, false);
   </script>
 </body>
 </html>
