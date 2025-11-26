@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <title>사브사리 · 행운 불러오는 중</title>
+  <link rel="stylesheet" href="styles/style.css">
+  <style>
+    body{
+      margin:0; font-family:"Pretendard",system-ui,-apple-system,Segoe UI,Roboto,"Noto Sans KR",Arial,sans-serif;
+      background:
+        radial-gradient(1200px 600px at 20% -10%, #ffd6ea 0%, #fff6fb 45%, #fff6fb 100%),
+        radial-gradient(800px 400px at 95% 0%, #e8f6ff 0%, transparent 55%);
+    }
+    .wrap{max-width:520px;margin:0 auto;padding:22px 16px 44px}
+    .card{background:#fff;border-radius:26px;padding:22px;text-align:center;box-shadow:0 10px 30px rgba(255,127,180,.28)}
+    .chip{display:inline-block;padding:7px 12px;border-radius:999px;background:#fff0f6;color:#c43c7a;font-weight:800;font-size:12px;margin-bottom:10px;border:1px solid #ffd6e9}
+    .subtitle{color:#555;font-size:14px;margin:12px 0 0}
+    .gif-stack{display:flex; flex-direction:column; align-items:center; gap:10px; margin:6px 0 6px}
+    .gif-stack img{width:100%; max-width:360px; border-radius:18px; box-shadow:0 8px 16px rgba(0,0,0,.06)}
+    .dots{display:inline-block; font-weight:800; letter-spacing:2px; animation:blink 1.2s infinite}
+    @keyframes blink{0%,100%{opacity:.2}50%{opacity:1}}
+    .footer{ text-align:center; color:#a2a2a2; font-size:12px; margin-top:20px }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card">
+      <div class="chip">잠시만요</div>
+
+      <!-- ▼ 동일한 GIF 5개 세로 배치 -->
+      <div class="gif-stack">
+        <img src="./assets/fortune.gif" alt="사브사리 행운 GIF 1">
+        <img src="./assets/fortune.gif" alt="사브사리 행운 GIF 2">
+        <img src="./assets/fortune.gif" alt="사브사리 행운 GIF 3">
+        <img src="./assets/fortune.gif" alt="사브사리 행운 GIF 4">
+        <img src="./assets/fortune.gif" alt="사브사리 행운 GIF 5">
+      </div>
+
+      <p class="subtitle">사브사리가 액운을 막고 행운을 담는 중 <span class="dots">...</span></p>
+    </div>
+    <div class="footer">© Sabusari</div>
+  </div>
+
+  <script>
+    setTimeout(()=>{ location.href = './result.html'; }, 5000);
+  </script>
+</body>
+</html>
