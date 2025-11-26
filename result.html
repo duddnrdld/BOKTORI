@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <title>사브사리 · 오늘의 행운</title>
+  <link rel="stylesheet" href="styles/style.css">
+  <style>
+    :root{ --ink:#333; --radius:26px; }
+    body{
+      margin:0; font-family:"Pretendard",system-ui,-apple-system,Segoe UI,Roboto,"Noto Sans KR",Arial,sans-serif;
+      background:
+        radial-gradient(1200px 600px at 30% -10%, #ffd6ea 0%, #fff6fb 45%, #fff6fb 100%),
+        radial-gradient(1000px 500px at 90% 10%, #e8f6ff 0%, transparent 55%);
+      color:var(--ink);
+    }
+    .wrap{max-width:520px;margin:0 auto;padding:22px 16px 44px; position:relative;}
+    .sparkle{position:absolute; inset:-40px; pointer-events:none; background:
+      radial-gradient(6px 6px at 20% 30%, rgba(255,255,255,.85), transparent 60%),
+      radial-gradient(6px 6px at 80% 20%, rgba(255,255,255,.85), transparent 60%),
+      radial-gradient(6px 6px at 70% 80%, rgba(255,255,255,.85), transparent 60%);
+      animation:spark 2.6s linear infinite;
+    }
+    @keyframes spark{0%{opacity:.2}50%{opacity:.6}100%{opacity:.2}}
+    .card{background:#fff;border-radius:var(--radius);padding:26px;text-align:center;box-shadow:0 10px 30px rgba(255,127,180,.28)}
+    .chip{display:inline-block;padding:7px 12px;border-radius:999px;background:#fff0f6;color:#c43c7a;font-weight:800;font-size:12px;margin-bottom:10px;border:1px solid #ffd6e9}
+    .fortune{
+      padding:20px;border-radius:18px;line-height:1.65;font-size:19px;font-weight:900;margin-top:10px;
+      background:conic-gradient(from 180deg at 50% 50%,#fff 0 30%,#fff7fb 30% 60%,#eef8ff 60% 100%);
+      border:1px dashed #ffd1e6; box-shadow:0 6px 12px rgba(255,127,180,.15);
+    }
+    /* ▼ 가운데 정렬용 */
+    .actions{ display:flex; justify-content:center; margin-top:16px; }
+    .btn{
+      display:inline-block; width:260px; padding:14px 16px; border:none; border-radius:18px;
+      font-weight:800; font-size:16px; text-align:center; text-decoration:none;
+      background:linear-gradient(90deg,#ff7fb4,#ffc1dd); color:#fff;
+      box-shadow:0 10px 18px rgba(255,127,180,.35);
+    }
+    .footer{ text-align:center; color:#a2a2a2; font-size:12px; margin-top:20px }
+    .gif-box img{width:100%; max-width:320px; display:block; margin:0 auto 12px; border-radius:16px; box-shadow:0 8px 16px rgba(0,0,0,.06)}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="sparkle"></div>
+
+    <div class="card">
+      <div class="chip">오늘의 행운메시지는?!</div>
+
+      <!-- (선택) 결과용 GIF 쓰는 경우 유지/삭제 자유 -->
+      <div class="gif-box">
+        <img src="./assets/result_motion.gif" alt="행운을 전하는 사브사리 GIF" onerror="this.style.display='none';" />
+      </div>
+
+      <div class="fortune" id="fortuneText">행운을 불러오는 중...</div>
+
+      <!-- ▶ 가운데 정렬된 버튼 -->
+      <div class="actions">
+        <a href="./loading.html" class="btn">새로운 행운 메시지 뽑기</a>
+      </div>
+
+      <div style="margin-top:12px">
+        <a class="tip" href="./index.html">처음으로</a>
+      </div>
+    </div>
+
+    <div class="footer">© Sabusari</div>
+  </div>
+
+  <script>
+    // fortunes52.js 로드 + 폴백
+    function loadFortunes() {
+      return new Promise((resolve) => {
+        const s = document.createElement('script');
+        s.src = './assets/fortunes52.js?v=3';
+        s.onload = () => resolve(true);
+        s.onerror = () => resolve(false);
+        document.head.appendChild(s);
+      });
+    }
+    const FALLBACK_52 = [
+      "오늘은 작은 결심이 큰 변화를 만든다.","기다리던 좋은 소식이 문을 두드린다.","네가 베푼 친절이 두 배로 돌아온다.",
+      "우연처럼 온 기회가 필연이 된다.","마음의 여유가 행운을 끌어당긴다.","작은 감사가 큰 복이 된다.",
+      "한 걸음 더, 거기에 답이 있다.","네가 찾는 답은 이미 네 안에 있다.","웃으면 복이 따라온다. 오늘 세 번 웃기!",
+      "좋은 인연이 오늘 너를 찾는다.","노력의 씨앗이 싹트는 날.","좋은 선택이 좋은 결과를 부른다.",
+      "마음껏 상상해도 좋아, 현실이 따라온다.","불필요한 걱정은 가볍게 정리하자.","뜻밖의 칭찬이 자신감을 불어넣는다.",
+      "작은 선물이 깜짝 기쁨이 된다.","내가 좋아하는 것을 하자, 운이 붙는다.","정성스럽게 한 일이 빛을 본다.",
+      "행복은 가까운 곳에 있다.","오늘의 선택, 내일의 행운.","기분 좋은 우연을 맞이할 준비를 하자.",
+      "정리정돈 10분, 마음 여유 1시간.","딱 한 통의 연락이 흐름을 바꾼다.","오늘은 네 편이 많은 날.",
+      "걱정의 80%는 일어나지 않는다.","작은 용기가 문을 연다.","오해는 대화로, 대화는 행운으로.",
+      "하늘도 네 편인 듯 맑다.","오늘의 나를 칭찬하자. 운이 올라간다.","좋은 습관이 좋은 기회를 부른다.",
+      "네 매력이 빛나는 순간이 온다.","기회는 준비된 사람에게 미소 짓는다.","마시멜로 같은 달콤한 소식!",
+      "오늘의 만남이 새로운 시작이 된다.","하루 한 번의 스트레칭이 아이디어를 부른다.","무심코 한 말이 누군가를 살린다.",
+      "적절한 타이밍, 오늘 너의 것.","운은 나누면 커진다.","마음에 든 아이디어, 바로 적어두자.",
+      "오늘은 내 편이 바람처럼 불어온다.","네가 원하는 곳으로 길이 이어진다.","작은 성취가 큰 자신감을 만든다.",
+      "고마움을 표현하면 기쁨이 배가된다.","의외의 곳에서 도움을 얻는다.","오늘은 원하는 답을 얻게 된다.",
+      "쉬어가는 용기가 흐름을 좋게 만든다.","마음의 창을 활짝 열자, 기회가 들어온다.","네가 찾는 사람도 너를 찾고 있다.",
+      "간절함이 방향을 정해준다.","오늘은 행운 포인트 +1 쌓이는 날!","빛나는 표정이 좋은 일을 끌어온다.",
+      "작은 선의가 큰 기적을 만든다."
+    ];
+
+    (async () => {
+      await loadFortunes();
+      const list = (Array.isArray(window.FORTUNE_52) && FORTUNE_52.length) ? FORTUNE_52 : FALLBACK_52;
+      const pick = list[Math.floor(Math.random() * list.length)];
+      document.getElementById('fortuneText').textContent = pick;
+    })();
+  </script>
+</body>
+</html>
