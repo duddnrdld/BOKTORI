@@ -175,6 +175,7 @@ const bgGifEl = document.getElementById("bgGif");
 const speakerEl = document.getElementById("speaker");
 const metaEl = document.getElementById("metaText");
 const logoBtnEl = document.getElementById("logoBtn");
+const resetBtnEl = document.getElementById("resetBtn");
 
 let state = "intro1"; // intro1 → intro1_done → intro2 → intro2_done → chosen
 let isTyping = false;
@@ -193,7 +194,7 @@ function typeLine(text, callback) {
       return;
     }
     dialogTextEl.textContent += text[idx++];
-  }, 70); // 글자 속도
+  }, 70);
 }
 
 // 6. 오늘 날짜 + 요일 문자열
@@ -272,8 +273,11 @@ function pickZodiac(name) {
   const idx = getDailyIndexForZodiac(name, fortunes.length);
   const todayFortune = fortunes[idx];
 
-  // 안내문
+  // 안내문 (글자 크기는 CSS에서 .tap-hint-btn = 16px로 맞춤)
   hintBtnEl.textContent = "오늘의 운세는 하루에 한 번만 바뀌어요 ✨";
+
+  // "처음으로" 버튼 표시
+  resetBtnEl.style.display = "block";
 
   // 대사 출력
   typeLine(todayFortune);
@@ -294,6 +298,9 @@ function goToIntro() {
   hintBtnEl.textContent = "화면을 한 번 눌러볼까?";
   zodiacBoxEl.style.display = "none";
   dialogTextEl.textContent = "";
+
+  // "처음으로" 버튼 숨기기
+  resetBtnEl.style.display = "none";
 
   // 첫 대사 타이핑
   typeLine(firstLine, () => {
@@ -331,6 +338,12 @@ logoBtnEl.addEventListener("click", (e) => {
 hintBtnEl.addEventListener("click", (e) => {
   e.stopPropagation();
   goNextStep();
+});
+
+// "처음으로" 버튼 클릭 → 첫 화면으로
+resetBtnEl.addEventListener("click", (e) => {
+  e.stopPropagation();
+  goToIntro();
 });
 
 // 화면 아무 곳이나 탭해도 (인트로 → 질문) 진행
