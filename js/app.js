@@ -2,7 +2,7 @@
 const firstLine = "안녕! 반가워!\n우리는 십이간지 복토리들이야!";
 const secondLine = "당신은 무슨띠에요?";
 
-// 2. 띠별 기본 정보 (배경 GIF)
+// 2. 띠별 GIF 경로
 const zodiacGifs = {
   "쥐": "assets/zodiac_rat.gif",
   "소": "assets/zodiac_ox.gif",
@@ -168,11 +168,13 @@ const zodiacFortunes = {
 
 // 4. DOM 요소
 const dialogTextEl = document.getElementById("dialogText");
-const hintTextEl = document.getElementById("hintText");
+const hintBtnEl = document.getElementById("tapHintBtn");
 const zodiacWrapEl = document.getElementById("zodiacWrap");
+const zodiacBoxEl = document.getElementById("zodiacBox");
 const bgGifEl = document.getElementById("bgGif");
 const speakerEl = document.getElementById("speaker");
 const metaEl = document.getElementById("metaText");
+const logoBtnEl = document.getElementById("logoBtn");
 
 let state = "intro1"; // intro1 → intro1_done → intro2 → intro2_done → chosen
 let isTyping = false;
@@ -205,11 +207,23 @@ function getTodayLabel() {
   return `${year}년 ${month}월 ${date}일 (${day})`;
 }
 
-// 7. 띠 선택 버튼 표시
+// 7. 날짜 + 띠 기준으로 "하루에 한 번" 고정되는 인덱스 계산
+function getDailyIndexForZodiac(zodiacKey, length) {
+  const d = new Date();
+  const base = `${zodiacKey}-${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
+  let hash = 0;
+  for (let i = 0; i < base.length; i++) {
+    hash = (hash * 31 + base.charCodeAt(i)) | 0; // 간단한 해시
+  }
+  if (hash < 0) hash = -hash;
+  return hash % length;
+}
+
+// 8. 띠 선택 버튼 표시
 function showZodiacButtons() {
   zodiacWrapEl.innerHTML = "";
-  zodiacWrapEl.style.display = "flex";
-  hintTextEl.textContent = "내 띠를 골라볼까?";
+  zodiacBoxEl.style.display = "block";
+  hintBtnEl.textContent = "띠를 골라서 오늘 운세를 확인해봐요 ✨";
 
   const order = [
     "쥐",
@@ -238,59 +252,90 @@ function showZodiacButtons() {
   });
 }
 
-// 8. 띠 선택 시 동작
+// 9. 띠 선택 시 동작 (1일 1운세)
 function pickZodiac(name) {
   const gifPath = zodiacGifs[name];
   const fortunes = zodiacFortunes[name];
-
   if (!gifPath || !fortunes) return;
 
   state = "chosen";
 
-  // 배경 GIF 교체 (index.html 기준 경로)
+  // 가운데 GIF 변경
   bgGifEl.style.backgroundImage = `url("${gifPath}")`;
 
-  // 화자/타이틀 & 오늘 날짜
+  // 헤더 텍스트 & 날짜
   speakerEl.textContent = `오늘의 ${name}띠 운세`;
   metaEl.textContent = getTodayLabel();
 
-  // 오늘의 랜덤 운세 1개 선택
-  const random = fortunes[Math.floor(Math.random() * fortunes.length)];
+  // 오늘 하루 동안 고정될 인덱스
+  const idx = getDailyIndexForZodiac(name, fortunes.length);
+  const todayFortune = fortunes[idx];
 
-  // 안내 문구
-  hintTextEl.textContent = "다른 띠 버튼을 다시 눌러도 새로운 운세가 나와요 ✨";
+  // 안내문
+  hintBtnEl.textContent = "오늘의 운세는 하루에 한 번만 바뀌어요 ✨";
 
   // 대사 출력
-  typeLine(random);
+  typeLine(todayFortune);
 }
 
-// 9. 첫 진입: 1번 대사 + 기본 배경 GIF 세팅
-window.addEventListener("load", () => {
-  // 기본 배경 GIF
+// 10. 최초 진입: 첫 대사 + 기본 GIF
+function goToIntro() {
+  state = "intro1";
+  isTyping = false;
+
+  // 기본 GIF (GIF파일1)
   bgGifEl.style.backgroundImage = 'url("assets/bg_gif1.gif")';
 
-  metaEl.textContent = ""; // 처음에는 날짜 표시 X
+  // 텍스트 초기화
+  speakerEl.textContent = "복토리";
+  metaEl.textContent = "";
+  hintBtnEl.textContent = "화면을 한 번 눌러볼까?";
+  zodiacBoxEl.style.display = "none";
+  dialogTextEl.textContent = "";
+
+  // 첫 대사 타이핑
   typeLine(firstLine, () => {
     state = "intro1_done";
-    hintTextEl.textContent = "화면을 한 번 눌러볼까?";
   });
+}
+
+// 11. 다음 단계로 진행
+function goNextStep() {
+  if (isTyping) return;
+
+  if (state === "intro1_done") {
+    state = "intro2";
+    metaEl.textContent = "";
+    speakerEl.textContent = "복토리";
+    typeLine(secondLine, () => {
+      state = "intro2_done";
+      showZodiacButtons();
+    });
+  }
+}
+
+// 12. 이벤트 바인딩
+window.addEventListener("load", () => {
+  goToIntro();
 });
 
-// 10. 화면 클릭 시 상태 전환
+// 로고 클릭 → 항상 첫 화면으로 리셋
+logoBtnEl.addEventListener("click", (e) => {
+  e.stopPropagation();
+  goToIntro();
+});
+
+// 힌트 버튼 클릭 → 다음 단계
+hintBtnEl.addEventListener("click", (e) => {
+  e.stopPropagation();
+  goNextStep();
+});
+
+// 화면 아무 곳이나 탭해도 (인트로 → 질문) 진행
 document.body.addEventListener(
   "click",
   () => {
-    if (isTyping) return;
-
-    if (state === "intro1_done") {
-      state = "intro2";
-      metaEl.textContent = ""; // 질문 단계에서는 날짜 숨김
-      speakerEl.textContent = "복토리";
-      typeLine(secondLine, () => {
-        state = "intro2_done";
-        showZodiacButtons();
-      });
-    }
+    goNextStep();
   },
   false
 );
