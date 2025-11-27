@@ -7,23 +7,37 @@
   <link rel="stylesheet" href="styles/style.css" />
 </head>
 <body>
-  <!-- 배경 GIF -->
-  <div class="bg-gif" id="bgGif"></div>
-
   <div class="overlay">
-    <!-- 좌측 상단 로고 -->
-    <div class="logo">BOKTORI</div>
+    <!-- 🔹 상단 로고 (assets/logo.png만 넣으면 적용) -->
+    <header class="top-bar">
+      <button class="logo-btn" id="logoBtn" type="button">
+        <img src="assets/logo.png" alt="BOKTORI 로고" class="logo-img" />
+      </button>
+    </header>
 
-    <!-- 중앙 대화 영역 -->
+    <!-- 🔹 가운데 GIF 영역 -->
+    <section class="gif-area">
+      <div class="gif-frame" id="bgGif"></div>
+    </section>
+
+    <!-- 🔹 아래쪽 말풍선 + 띠 선택 -->
     <main class="main" id="mainArea">
       <section class="bubble" id="bubble">
         <div class="speaker" id="speaker">복토리</div>
         <div class="meta" id="metaText"></div>
         <div class="text" id="dialogText"></div>
-        <div class="hint" id="hintText">화면을 한 번 눌러볼까?</div>
+
+        <!-- 버튼처럼 보이는 힌트 -->
+        <button class="tap-hint-btn" id="tapHintBtn" type="button">
+          화면을 한 번 눌러볼까?
+        </button>
       </section>
 
-      <section class="zodiac-wrap" id="zodiacWrap" style="display:none;"></section>
+      <!-- 띠 선택 박스 -->
+      <section class="zodiac-box" id="zodiacBox" style="display:none;">
+        <p class="zodiac-title">아래에서 내 띠를 골라주세요!</p>
+        <div class="zodiac-wrap" id="zodiacWrap"></div>
+      </section>
     </main>
   </div>
 
