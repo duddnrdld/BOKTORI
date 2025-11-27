@@ -213,7 +213,7 @@ function getDailyIndexForZodiac(zodiacKey, length) {
   const base = `${zodiacKey}-${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
   let hash = 0;
   for (let i = 0; i < base.length; i++) {
-    hash = (hash * 31 + base.charCodeAt(i)) | 0; // 간단한 해시
+    hash = (hash * 31 + base.charCodeAt(i)) | 0;
   }
   if (hash < 0) hash = -hash;
   return hash % length;
@@ -252,7 +252,7 @@ function showZodiacButtons() {
   });
 }
 
-// 9. 띠 선택 시 동작 (1일 1운세)
+// 9. 띠 선택 시 동작 (1일 1운세 + GIF 10% 크게)
 function pickZodiac(name) {
   const gifPath = zodiacGifs[name];
   const fortunes = zodiacFortunes[name];
@@ -260,8 +260,9 @@ function pickZodiac(name) {
 
   state = "chosen";
 
-  // 가운데 GIF 변경
+  // 가운데 GIF 변경 + 크기: 기존 대비 10% 크게 (70vw→77vw, 300→330)
   bgGifEl.style.backgroundImage = `url("${gifPath}")`;
+  bgGifEl.style.width = "min(77vw, 330px)";
 
   // 헤더 텍스트 & 날짜
   speakerEl.textContent = `오늘의 ${name}띠 운세`;
@@ -278,13 +279,14 @@ function pickZodiac(name) {
   typeLine(todayFortune);
 }
 
-// 10. 최초 진입: 첫 대사 + 기본 GIF
+// 10. 최초 진입: 첫 대사 + 기본 GIF (20% 크게)
 function goToIntro() {
   state = "intro1";
   isTyping = false;
 
-  // 기본 GIF (GIF파일1)
+  // 기본 GIF (GIF파일1) + 크기: 20% 크게 (84vw, 360px)
   bgGifEl.style.backgroundImage = 'url("assets/bg_gif1.gif")';
+  bgGifEl.style.width = "min(84vw, 360px)";
 
   // 텍스트 초기화
   speakerEl.textContent = "복토리";
