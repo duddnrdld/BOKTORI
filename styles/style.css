@@ -12,8 +12,8 @@ body {
 body {
   font-family: "Pretendard", "Noto Sans KR", system-ui, -apple-system, Segoe UI,
     Roboto, sans-serif;
-  /* 🔹 더 연한 파스텔 핑크 배경 */
-  background: radial-gradient(circle at top, #fff4fb 0, #ffeaf7 30%, #ffe4f2 55%, #fff7fb 100%);
+  /* 🔹 배경색상 단색으로 변경 */
+  background: #fdf2f3;
   color: #403043;
   overflow: hidden;
 }
@@ -45,7 +45,6 @@ body {
   padding: 0;
   cursor: pointer;
   border-radius: 999px;
-  /* 🔹 그림자 제거 */
   box-shadow: none;
   overflow: hidden;
 }
@@ -65,11 +64,10 @@ body {
 }
 
 .gif-frame {
-  /* 🔹 기본: bg_gif1 기준 20% 크게 (기존 70vw → 84vw, 300px → 360px) */
+  /* 기본: bg_gif1 기준 20% 크게 (기존 70vw → 84vw, 300px → 360px) */
   width: min(84vw, 360px);
   aspect-ratio: 1 / 1;
   border-radius: 28px;
-  /* 🔹 박스/그림자 제거 */
   background-color: transparent;
   background-position: center center;
   background-repeat: no-repeat;
@@ -84,7 +82,7 @@ body {
   padding-bottom: 2px;
 }
 
-/* 말풍선 (입체감 유지) */
+/* 말풍선 */
 .bubble {
   width: 100%;
   max-width: 480px;
@@ -123,14 +121,14 @@ body {
   color: #403043;
 }
 
-/* "화면을 한 번 눌러볼까?" 버튼처럼 */
+/* "화면을 한 번 눌러볼까?" / "오늘의 운세는 하루에 한 번만 바뀌어요" 공용 버튼 */
 .tap-hint-btn {
   margin-top: 8px;
   width: 100%;
   border: none;
   border-radius: 999px;
   padding: 10px 14px;
-  font-size: 13px;
+  font-size: 16px; /* 🔹 운세 텍스트(.text)와 동일 크기 */
   font-weight: 700;
   cursor: pointer;
   background: linear-gradient(90deg, #ffb6dc, #ffe0f2);
@@ -148,8 +146,32 @@ body {
   box-shadow: 0 4px 10px rgba(255, 122, 172, 0.55);
 }
 
-/* 띠 선택 영역 */
-/* 🔹 여기서는 박스/그림자 제거, 텍스트만 */
+/* 🔹 "처음으로" 버튼 */
+.reset-btn {
+  margin-top: 8px;
+  width: 100%;
+  border-radius: 999px;
+  padding: 9px 14px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  background: #ffffff;
+  color: #c12c6f;
+  border: 1px solid rgba(255, 160, 210, 0.9);
+  box-shadow: 0 6px 14px rgba(255, 126, 182, 0.5);
+  transition: transform 0.1s ease, box-shadow 0.1s ease, filter 0.1s ease;
+}
+
+.reset-btn:hover {
+  filter: brightness(1.02);
+}
+
+.reset-btn:active {
+  transform: translateY(1px);
+  box-shadow: 0 4px 10px rgba(255, 126, 182, 0.5);
+}
+
+/* 띠 선택 영역: 텍스트만 (박스/그림자 제거) */
 .zodiac-box {
   width: 100%;
   max-width: 480px;
@@ -169,19 +191,20 @@ body {
   text-align: center;
 }
 
-/* 띠 선택 버튼들 (박스+그림자 유지) */
+/* 띠 선택 버튼들을 6개씩 2줄로 배치 */
 .zodiac-wrap {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  justify-content: center;
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr)); /* 🔹 가로 6개씩 */
+  gap: 6px;
+  justify-items: center;
 }
 
 .zodiac-btn {
+  width: 100%;
   border: none;
   border-radius: 999px;
-  padding: 7px 12px;
-  font-size: 13px;
+  padding: 6px 0;
+  font-size: 11px; /* 🔹 6개가 들어가도록 약간 줄임 */
   font-weight: 700;
   cursor: pointer;
   background: linear-gradient(135deg, #ffffff, #ffe8f6);
@@ -190,6 +213,7 @@ body {
   box-shadow: 0 6px 14px rgba(255, 126, 182, 0.6);
   transition: transform 0.1s ease, box-shadow 0.1s ease, filter 0.1s ease;
   backdrop-filter: blur(8px);
+  text-align: center;
 }
 
 .zodiac-btn:hover {
